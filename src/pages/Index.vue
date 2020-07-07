@@ -14,16 +14,19 @@
 
     <template v-if="weatherData">
       <div class="col text-white text-center">
-        <div class="text-h4 text-weight-light">Chittoor</div>
-        <div class="text-h6 text-weight-light">Rain</div>
+        <div class="text-h4 text-weight-light">{{weatherData.name}}</div>
+        <div class="text-h6 text-weight-light">{{weatherData.weather[0].main}}</div>
         <div class="text-h1 text-weight-thin q-my-lg relative-position">
-          <span>8</span>
-          <span class="text-h4 relative-position degree">&deg</span>
+          <span>{{Math.round(weatherData.main.temp)}}</span>
+          <span class="text-h4 relative-position degree">&deg;C</span>
         </div>
       </div>
 
       <div class="col text-center">
-        <img src="https://www.fillmurray.com/100/100" alt="Bill" />
+        <img
+          :src="`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`"
+          alt="Bill"
+        />
       </div>
     </template>
     <template v-else>
@@ -50,7 +53,9 @@ export default {
       search: "",
       weatherData: null,
       lat: null,
-      lon: null
+      lon: null,
+      apiUrl: "https://api.openweathermap.org/data/2.5/weather",
+      apiKey: "b54857ff489c75f829c6b8333cd2122a"
     };
   },
   methods: {
@@ -59,6 +64,15 @@ export default {
         console.log("position: ", position);
         this.lat = position.coords.latitude;
         this.lon = position.coords.longitude;
+        this.getWeatherByCoords();
+      });
+    },
+    getWeatherByCoords() {
+      this.$axios(
+        `${this.apiUrl}?lat=${this.lat}&lon=${this.lon}&APPID=${this.apiKey}&units=metric`
+      ).then(response => {
+        console.log("response:", response);
+        this.weatherData = response.data;
       });
     }
   }
