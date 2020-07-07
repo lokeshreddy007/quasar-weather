@@ -1,13 +1,19 @@
 <template>
   <q-page class="flex column">
     <div class="col q-pt-lg q-px-md">
-      <q-input v-model="search" placeholder="Search" dark borderless>
+      <q-input
+        v-model="search"
+        @keyup.enter="getWeatherBySearch"
+        placeholder="Search"
+        dark
+        borderless
+      >
         <template v-slot:before>
           <q-icon @click="getLocation" name="my_location" />
         </template>
 
         <template v-slot:append>
-          <q-btn round dense flat icon="search" />
+          <q-btn @click="getWeatherBySearch" dense flat icon="search" />
         </template>
       </q-input>
     </div>
@@ -71,8 +77,17 @@ export default {
       this.$axios(
         `${this.apiUrl}?lat=${this.lat}&lon=${this.lon}&APPID=${this.apiKey}&units=metric`
       ).then(response => {
-        console.log("response:", response);
+        // console.log("response:", response);
         this.weatherData = response.data;
+      });
+    },
+    getWeatherBySearch() {
+      this.$axios(
+        `${this.apiUrl}?q=${this.search}&APPID=${this.apiKey}&units=metric`
+      ).then(response => {
+        // console.log("response:", response);
+        this.weatherData = response.data;
+        this.search = "";
       });
     }
   }
