@@ -3,7 +3,7 @@
     <div class="col q-pt-lg q-px-md">
       <q-input v-model="search" placeholder="Search" dark borderless>
         <template v-slot:before>
-          <q-icon name="my_location" />
+          <q-icon @click="getLocation" name="my_location" />
         </template>
 
         <template v-slot:append>
@@ -32,7 +32,7 @@
           Quasar
           <br />Weather
         </div>
-        <q-btn class="col" flat>
+        <q-btn @click="getLocation" class="col" flat>
           <q-icon left size="3em" name="my_location" />
           <div>Find my location</div>
         </q-btn>
@@ -48,8 +48,19 @@ export default {
   data() {
     return {
       search: "",
-      weatherData: null
+      weatherData: null,
+      lat: null,
+      lon: null
     };
+  },
+  methods: {
+    getLocation() {
+      navigator.geolocation.getCurrentPosition(position => {
+        console.log("position: ", position);
+        this.lat = position.coords.latitude;
+        this.lon = position.coords.longitude;
+      });
+    }
   }
 };
 </script>
